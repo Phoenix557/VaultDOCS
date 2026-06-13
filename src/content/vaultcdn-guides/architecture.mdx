@@ -1,0 +1,26 @@
+---
+title: Architecture
+description: System components and upload data flow.
+order: 4
+---
+
+```
+Browser / Electron
+        │
+        ▼
+Next.js (pages + API on :3000)
+        ├── iron-session cookie (cdn_session)
+        ├── MongoDB (file, folder, member, API key metadata)
+        ├── ./uploads/ (file blobs on disk)
+        └── Discord API (OAuth, guild join, profile hydration)
+```
+
+## Data flow on upload
+
+1. Client sends `multipart/form-data` with `Authorization: Bearer cdn_…` or JWT
+2. Server validates magic bytes, size, and user quota
+3. File written to `uploads/{discordId}/{uuid}{ext}`
+4. Metadata saved to MongoDB
+5. Response includes `fullUrl` for tools like ShareX
+
+**Public serving:** `GET /f/{id}` reads from disk, optionally resizes images via Sharp, and returns with cache headers. No session required.

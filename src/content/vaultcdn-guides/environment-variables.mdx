@@ -1,0 +1,50 @@
+---
+title: Environment Variables
+description: Required and optional configuration for VAULT.
+order: 8
+---
+
+## Required
+
+| Variable | Description |
+|----------|-------------|
+| `DISCORD_CLIENT_ID` | Discord OAuth client ID |
+| `DISCORD_CLIENT_SECRET` | Discord OAuth client secret |
+| `SESSION_SECRET` | iron-session encryption password (32+ random bytes) |
+| `JWT_SECRET` | JWT signing secret (32+ random bytes) |
+| `MONGODB_URI` | MongoDB connection string |
+
+## Discord and access control
+
+| Variable | Description |
+|----------|-------------|
+| `DISCORD_REDIRECT_URI` | OAuth callback URL. Defaults to `{APP_URL}/api/auth/callback` if omitted |
+| `DISCORD_BOT_TOKEN` | Bot token for guild join and admin profile hydration |
+| `DISCORD_GUILD_ID` | Guild users are added to on sign-in (default: `995856737083064421`) |
+| `ALLOWED_UPLOAD_DISCORD_IDS` | Comma-separated Discord IDs with upload/delete access |
+| `ADMIN_DISCORD_IDS` | Comma-separated Discord IDs with admin panel access |
+
+## Storage and limits
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MAX_UPLOAD_BYTES` | `104857600` (100 MB) | Maximum size per uploaded file in bytes |
+| `STORAGE_QUOTA_BYTES` | `10737418240` (10 GB) | Default per-user storage quota |
+| `UPLOADS_DIR` | `uploads` | Directory for file blobs on disk |
+| `APP_URL` | `https://cdn.phxservices.co` | Public base URL for OAuth redirects and `fullUrl` generation |
+
+## Electron only (not used by Next.js)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PHXCDN_URL` | `https://cdn.phxservices.co` | URL the desktop shell loads |
+
+## Custom domains
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `PRIMARY_APP_HOST` | `cdn.phxservices.co` | Main app hostname (OAuth callback) |
+| `DOMAIN_CNAME_TARGET` | same as primary | CNAME target users must point to |
+| `DOMAIN_SSL_ENABLED` | `true` | Run Certbot when a domain is verified |
+| `CERTBOT_EMAIL` | — | Let's Encrypt registration email |
+| `NGINX_SITES_DIR` | `/etc/nginx/sites-enabled` | Where vhost snippets are written |

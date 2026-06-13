@@ -1,0 +1,47 @@
+---
+import type { ApiEndpoint, ApiParam } from '../../data/types';
+import MethodBadge from './MethodBadge.astro';
+import ParamTable from './ParamTable.astro';
+import CodePanel from './CodePanel.astro';
+
+interface Props {
+  endpoint: ApiEndpoint & { curl?: string; response?: string };
+}
+
+const { endpoint } = Astro.props;
+
+const exampleRequest = endpoint.exampleRequest ?? endpoint.curl ?? '';
+const exampleResponse = endpoint.exampleResponse ?? endpoint.response;
+
+const allParams = endpoint.params ?? [];
+const queryParams: ApiParam[] = allParams.filter(
+  (p) => !p.in || p.in === 'query' || p.in === 'path' || p.in === 'header',
+);
+const bodyParams: ApiParam[] = endpoint.body ?? allParams.filter((p) => p.in === 'body');
+---
+
+<article id={endpoint.id} class="scroll-mt-20 border border-border bg-card sm:scroll-mt-24">
+  <div class="border-b border-border p-3 sm:p-4 md:p-6">
+    <h3 class="text-base font-semibold tracking-wide sm:text-lg">{endpoint.title}</h3>
+    <p class="mt-1 text-sm leading-relaxed text-muted-foreground">{endpoint.description}</p>
+    {endpoint.auth && (
+      <p class="mt-2 font-heading text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+        Auth · <span class="normal-case text-foreground/80">{endpoint.auth}</span>
+      </p>
+    )}
+    <div class="mt-4 flex flex-wrap items-center gap-2 border border-border bg-background px-3 py-2.5 sm:gap-3">
+      <MethodBadge method={endpoint.method} />
+      <code class="min-w-0 flex-1 break-all font-mono text-xs text-foreground sm:break-normal sm:text-sm">{endpoint.path}</code>
+    </div>
+  </div>
+
+  <div class="grid gap-4 p-3 sm:gap-6 sm:p-4 md:p-6">
+    {queryParams.length > 0 && <ParamTable title="Query / Path Parameters" params={queryParams} />}
+    {bodyParams.length > 0 && <ParamTable title="Request Body" params={bodyParams} />}
+
+    <div class="grid gap-4">
+      {exampleRequest && <CodePanel label="Request" code={exampleRequest} />}
+      {exampleResponse && <CodePanel label="Response" code={exampleResponse} />}
+    </div>
+  </div>
+</article>

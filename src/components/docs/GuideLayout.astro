@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { AppConfig } from '../../data/types';
+import Header from './Header.astro';
+import Sidebar from './Sidebar.astro';
+import MobileNav from './MobileNav.astro';
+
+interface Props {
+  app: AppConfig;
+  title: string;
+  description?: string;
+  currentGuideSlug: string;
+}
+
+const { app, title, description, currentGuideSlug } = Astro.props;
+const sidebarProps = {
+  mode: 'guides' as const,
+  app,
+  appSlug: app.slug,
+  currentGuideSlug,
+};
+---
+
+<BaseLayout title={`${title} — ${app.name} — PHX Docs`} description={description ?? app.description}>
+  <div class="min-h-dvh">
+    <Header app={app} mode="guides" />
+    <MobileNav {...sidebarProps} />
+    <div class="mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
+      <div class="border-b border-border p-4 sm:p-6 md:p-10 lg:border-x">
+        <h1 class="text-2xl font-bold tracking-wide sm:text-3xl md:text-4xl">{title}</h1>
+        {description && (
+          <p class="mt-2 max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
+            {description}
+          </p>
+        )}
+      </div>
+      <div class="flex flex-col border-b border-border lg:flex-row lg:gap-8 lg:border-x lg:p-8">
+        <Sidebar {...sidebarProps} />
+        <div class="min-w-0 flex-1 p-3 sm:p-4 lg:p-0">
+          <article class="prose-docs">
+            <slot />
+          </article>
+          <slot name="footer" />
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

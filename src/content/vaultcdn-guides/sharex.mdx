@@ -1,0 +1,33 @@
+---
+title: ShareX
+description: Configure ShareX and external upload tools.
+order: 12
+---
+
+## Quick setup
+
+1. Sign in to VAULT and open **Settings**
+2. Create an API key (copy it immediately — shown once)
+3. Import `sharex/personal-cdn.sxcu`:
+   - Double-click the file, or
+   - ShareX → **Destinations** → **Custom uploader settings** → **Import**
+4. Replace `YOUR_API_KEY_HERE` in the uploader headers with your `cdn_…` key
+5. Confirm settings:
+   - **File form name:** `file`
+   - **Body:** `MultipartFormData`
+   - **URL response field:** `{json:fullUrl}`
+
+## Recommended capture quality
+
+Files are stored exactly as uploaded — no server-side recompression.
+
+- **Screenshots:** PNG (lossless). If using JPEG, set quality to 100.
+- **Screen recordings:** MP4 or WebM at high bitrate / low CRF.
+
+## Upload via API key
+
+```bash
+curl -X POST https://cdn.phxservices.co/api/upload \
+  -H "Authorization: Bearer cdn_<your-api-key>" \
+  -F "file=@photo.png"
+```

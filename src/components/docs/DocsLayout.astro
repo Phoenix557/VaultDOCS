@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { AppConfig, ApiGroup } from '../../data/types';
+import Header from './Header.astro';
+import Sidebar from './Sidebar.astro';
+import MobileNav from './MobileNav.astro';
+
+interface Props {
+  app: AppConfig;
+  apiGroups: ApiGroup[];
+}
+
+const { app, apiGroups } = Astro.props;
+const sidebarProps = { mode: 'docs' as const, app, appSlug: app.slug, apiGroups };
+---
+
+<BaseLayout title={`${app.docsTitle} — PHX Docs`} description={app.description}>
+  <div class="min-h-dvh">
+    <Header app={app} mode="docs" />
+    <MobileNav {...sidebarProps} />
+    <div class="mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
+      <slot name="hero" />
+      <div class="flex flex-col border-b border-border lg:flex-row lg:gap-8 lg:border-x lg:p-8">
+        <Sidebar {...sidebarProps} />
+        <div class="min-w-0 flex-1 px-3 py-3 sm:px-4 sm:py-4 lg:px-0 lg:py-0">
+          <slot />
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,77 @@
+---
+title: Deployment
+description: Production build, nginx, and custom domains.
+order: 14
+---
+
+## Build and run
+
+```bash
+npm install
+npm run build
+npm start
+```
+
+The app listens on port **3000** by default.
+
+## Production checklist
+
+- [ ] Set `APP_URL` to your public HTTPS domain
+- [ ] Set `DISCORD_REDIRECT_URI` (or rely on `{APP_URL}/api/auth/callback`)
+- [ ] Register the production redirect URI in the Discord Developer Portal
+- [ ] Use strong random values for `SESSION_SECRET` and `JWT_SECRET`
+- [ ] Run MongoDB with persistence and backups
+- [ ] Mount a persistent volume for `uploads/` (or set `UPLOADS_DIR`)
+- [ ] Put nginx (or similar) in front with SSL and a large body size limit
+- [ ] Match nginx `client_max_body_size` to `MAX_UPLOAD_BYTES`
+
+## Custom domains (per user)
+
+Uploaders can add a custom hostname under **Settings → Custom Domain**.
+
+**User flow**
+
+1. Enter a hostname (e.g. `cdn.example.com`) and save.
+2. Add a **CNAME** record: `cdn.example.com` → `DOMAIN_CNAME_TARGET`.
+3. Click **Verify DNS**. The server checks the CNAME (or optional TXT `_vault.{hostname}` token).
+4. On success, SSL is provisioned via Certbot.
+
+**OAuth on custom domains:** Discord OAuth always uses the **primary** callback URI. Custom-domain login redirects through the primary host, then returns via a one-time `/api/auth/exchange` code.
+
+## nginx
+
+The critical setting:
+
+```nginx
+client_max_body_size 100m;
+```
+
+Default nginx limits uploads to **1 MB**, which will break the upload API.
+
+```nginx
+server {
+    listen 443 ssl http2;
+    server_name cdn.phxservices.co;
+
+    client_max_body_size 100m;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+## Migrating upload layout
+
+If upgrading from an older flat `uploads/` layout:
+
+```bash
+npm run migrate-uploads
+```
+
+This moves files into per-user subdirectories (`uploads/{discordId}/`).

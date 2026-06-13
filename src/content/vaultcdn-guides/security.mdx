@@ -1,0 +1,19 @@
+---
+title: Security
+description: Sessions, API keys, validation, and authorization.
+order: 16
+---
+
+| Area | Implementation |
+|------|----------------|
+| Sessions | httpOnly cookie, `secure` in production, `sameSite: lax` |
+| API keys | `cdn_` prefix, SHA-256 hash stored, full key shown once at creation |
+| JWT | HS256, 1-hour expiry |
+| Upload validation | Magic-byte MIME detection (`file-type`), size limits, sanitized extensions |
+| Path traversal | All resolved paths must stay under `UPLOADS_DIR` |
+| Rate limiting | 20 uploads/minute per user on `POST /api/upload` |
+| Authorization | File/folder mutations require owner or admin; `/f/*` is public read |
+| HTTP headers | CSP, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy` |
+| Electron | `contextIsolation`, no `nodeIntegration`, sandboxed renderer, navigation allowlist |
+
+Upload and delete require explicit permission — signing in alone is not enough unless you are an admin, on the env allowlist, or granted access in the admin panel.

@@ -1,0 +1,36 @@
+---
+title: Gallery
+description: Using the gallery workspace after sign-in.
+order: 10
+---
+
+The gallery at `/gallery` is the main workspace after sign-in.
+
+## Navigation
+
+- Click folders to drill down; breadcrumbs return to parent levels
+- Grid/list toggle in the toolbar (saved locally)
+- Category filter chips for quick media-type filtering
+
+## Selection and bulk actions
+
+- Click to select; Ctrl/Cmd for multi-select; Shift for range select
+- Bulk delete with confirmation dialog
+
+## Drag and drop
+
+- Drop files onto the upload zone or gallery to upload
+- Drag files or folders onto other folders to move them
+- Multi-selected files can be dragged together
+
+## Context menu actions (right-click)
+
+- View, copy CDN URL, download, rename, pin/unpin
+- Move to folder (nested submenu)
+- Set as folder thumbnail (folders only)
+- Open image editor (images only)
+- Delete
+
+## Image editor
+
+Open from the context menu on any image. Tools: highlight, blur, pixelate, text. Supports undo/redo, zoom, pan, and font/alignment controls. Save overwrites the file on the server via `PUT /api/files/{id}`.

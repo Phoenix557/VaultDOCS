@@ -1,0 +1,18 @@
+---
+title: Discord Setup
+description: Create and configure a Discord application for OAuth.
+order: 7
+---
+
+1. Go to the [Discord Developer Portal](https://discord.com/developers/applications) and create a new application.
+2. Under **OAuth2 → Redirects**, add:
+   - Local: `http://localhost:3000/api/auth/callback`
+   - Production: `https://cdn.phxservices.co/api/auth/callback` (or your domain)
+3. Copy **Client ID** and **Client Secret** into `.env`.
+4. Under **Bot**, create a bot and copy the token to `DISCORD_BOT_TOKEN`.
+5. Invite the bot to your Discord server with permissions to manage members / create invites.
+6. Set `DISCORD_GUILD_ID` to your server ID (right-click server → Copy Server ID, with Developer Mode on).
+7. Copy your Discord user ID (right-click your profile → Copy User ID).
+8. Add your ID to `ALLOWED_UPLOAD_DISCORD_IDS` and `ADMIN_DISCORD_IDS` in `.env`.
+
+On first sign-in, users are added to the configured guild via the `guilds.join` scope and bot token.

@@ -1,0 +1,71 @@
+---
+import type { AppConfig } from '../../data/types';
+
+interface Props {
+  app: AppConfig;
+  mode: 'docs' | 'guides';
+}
+
+const { app, mode } = Astro.props;
+
+const navLinkClass = (active: boolean) =>
+  [
+    'font-heading text-xs font-medium uppercase tracking-wide transition-colors sm:text-sm',
+    active ? 'text-white' : 'text-muted-foreground hover:text-white',
+  ].join(' ');
+---
+
+<header class="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
+  <div class="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 px-3 sm:h-16 sm:gap-4 sm:px-4 md:px-6">
+    <div class="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+      <button
+        type="button"
+        id="mobile-nav-open"
+        class="flex size-9 shrink-0 items-center justify-center border border-border text-muted-foreground transition-colors hover:border-white hover:text-white lg:hidden"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav-panel"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <a href={`/${app.slug}/docs`} class="flex min-w-0 items-center gap-2 sm:gap-3">
+        <span class="flex size-7 shrink-0 items-center justify-center bg-white text-black sm:size-8">
+          <span class="font-heading text-base font-bold leading-none sm:text-lg">V</span>
+        </span>
+        <span class="font-heading text-base font-bold tracking-widest text-white sm:text-xl">VAULT</span>
+        <span class="hidden font-heading text-sm font-medium uppercase tracking-wide text-muted-foreground lg:inline">
+          Docs
+        </span>
+      </a>
+    </div>
+
+    <nav class="flex shrink-0 items-center gap-2.5 sm:gap-6">
+      <a href={`/${app.slug}/docs`} class={navLinkClass(mode === 'docs')}>Docs</a>
+      <a href={`/${app.slug}/guides/overview`} class={navLinkClass(mode === 'guides')}>Guides</a>
+      <a
+        href={app.githubUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class:list={[navLinkClass(false), 'hidden sm:inline']}
+      >
+        GitHub
+      </a>
+      <a
+        href={app.liveUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class:list={[navLinkClass(false), 'hidden md:inline']}
+      >
+        Live
+      </a>
+      <span class="hidden items-center gap-1.5 border border-border px-2 py-1 font-heading text-[10px] font-medium uppercase tracking-widest text-muted-foreground lg:flex">
+        <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        {app.version}
+      </span>
+    </nav>
+  </div>
+</header>

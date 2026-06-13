@@ -1,0 +1,35 @@
+---
+title: Project Structure
+description: Repository layout for PhxCDN.
+order: 15
+---
+
+```
+PhxCDN/
+├── app/                      # Next.js App Router
+│   ├── api/                  # REST API routes
+│   ├── f/[id]/               # Public file serving
+│   ├── gallery/              # Gallery page
+│   ├── settings/             # Settings page
+│   ├── admin/                # Admin page
+│   └── layout.tsx            # Root layout, auth + upload providers
+├── components/               # UI components
+│   ├── image-editor/         # In-browser editor
+│   └── ui/                   # Shared primitives
+├── electron/                 # Desktop app (main.ts, preload.ts)
+├── hooks/                    # Gallery selection, file loading, context menus
+├── lib/                      # Core server and client logic
+│   ├── models/               # Mongoose schemas
+│   ├── image-editor/         # Canvas effects
+│   ├── auth.ts               # Sessions, JWT, Discord OAuth
+│   ├── upload.ts             # Validation, storage, quotas
+│   ├── folders.ts            # Folder CRUD
+│   ├── members.ts            # Member access and quotas
+│   └── serve-file.ts         # Public file handler + Sharp previews
+├── scripts/                  # migrate-uploads, icon generation, smoke tests
+├── deploy/                   # nginx reference config
+├── sharex/                   # ShareX uploader preset
+├── public/                   # Static assets (icon.svg, hero-bg)
+├── build/                    # Generated Electron icons
+└── release/                  # electron-builder output (gitignored)
+```

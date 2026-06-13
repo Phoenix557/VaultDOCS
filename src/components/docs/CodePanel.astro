@@ -1,0 +1,63 @@
+---
+interface Props {
+  code: string;
+  label?: string;
+  class?: string;
+}
+
+const { code, label = 'Example', class: className = '' } = Astro.props;
+const id = `code-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class:list={['code-panel border border-border bg-code-bg', className]}>
+  <div class="flex items-center justify-between gap-2 border-b border-border px-3 py-2 sm:py-1.5">
+    <span class="font-heading text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{label}</span>
+    <button
+      type="button"
+      class="code-copy-btn flex shrink-0 items-center gap-1.5 font-heading text-[10px] font-medium uppercase tracking-widest text-muted-foreground transition-colors hover:text-white"
+      data-copy-target={id}
+      data-copy-label="Copy"
+      aria-label="Copy code"
+    >
+      <svg class="copy-icon h-3.5 w-3.5 sm:h-3 sm:w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+      </svg>
+      <svg class="check-icon hidden h-3.5 w-3.5 text-white sm:h-3 sm:w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+      <span class="copy-text hidden sm:inline">Copy</span>
+    </button>
+  </div>
+  <pre class="code-panel-pre overflow-x-auto p-3 text-xs leading-relaxed sm:p-4 sm:text-sm"><code id={id} class="code-panel-code font-mono text-foreground/90">{code}</code></pre>
+</div>
+
+<script>
+  document.querySelectorAll('.code-copy-btn[data-copy-target]').forEach((btn) => {
+    if (btn.dataset.bound) return;
+    btn.dataset.bound = 'true';
+    btn.addEventListener('click', async () => {
+      const targetId = btn.getAttribute('data-copy-target');
+      const el = targetId ? document.getElementById(targetId) : null;
+      if (!el) return;
+      try {
+        await navigator.clipboard.writeText(el.textContent ?? '');
+        const text = btn.querySelector('.copy-text');
+        const copyIcon = btn.querySelector('.copy-icon');
+        const checkIcon = btn.querySelector('.check-icon');
+        if (text) text.textContent = 'Copied';
+        copyIcon?.classList.add('hidden');
+        checkIcon?.classList.remove('hidden');
+        btn.classList.add('text-white');
+        setTimeout(() => {
+          if (text) text.textContent = btn.dataset.copyLabel ?? 'Copy';
+          copyIcon?.classList.remove('hidden');
+          checkIcon?.classList.add('hidden');
+          btn.classList.remove('text-white');
+        }, 1500);
+      } catch {
+        /* clipboard unavailable */
+      }
+    });
+  });
+</script>

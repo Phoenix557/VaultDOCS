@@ -1,0 +1,35 @@
+---
+import type { ApiParam } from '../../data/types';
+
+interface Props {
+  title: string;
+  params: ApiParam[];
+}
+
+const { title, params } = Astro.props;
+---
+
+<div>
+  <h4 class="mb-2 font-heading text-xs font-semibold tracking-widest text-muted-foreground">{title}</h4>
+  <div class="border border-border">
+    {
+      params.map((param, i) => (
+        <div
+          class:list={[
+            'flex flex-col gap-2 px-3 py-3 sm:grid sm:grid-cols-[180px_1fr] sm:gap-4 sm:py-2.5',
+            i > 0 && 'border-t border-border',
+          ]}
+        >
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <code class="font-mono text-sm text-white">{param.name}</code>
+            <span class="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{param.type}</span>
+            {param.required && (
+              <span class="font-mono text-[10px] uppercase tracking-wider text-destructive">required</span>
+            )}
+          </div>
+          <p class="text-sm leading-relaxed text-muted-foreground">{param.description}</p>
+        </div>
+      ))
+    }
+  </div>
+</div>

@@ -1,0 +1,80 @@
+---
+import DocsLayout from '../../../components/docs/DocsLayout.astro';
+import EndpointBlock from '../../../components/docs/EndpointBlock.astro';
+import CodePanel from '../../../components/docs/CodePanel.astro';
+import ParamTable from '../../../components/docs/ParamTable.astro';
+import { getApp, getAppSlugs } from '../../../data/apps/index';
+import { vaultcdnApiGroups, imagePreviewSection } from '../../../data/apps/vaultcdn/api';
+
+export function getStaticPaths() {
+  return getAppSlugs().map((app) => ({ params: { app } }));
+}
+
+const { app: appSlug } = Astro.params;
+const app = getApp(appSlug!);
+
+if (!app) {
+  return Astro.redirect('/');
+}
+---
+
+<DocsLayout app={app} apiGroups={vaultcdnApiGroups}>
+  <div slot="hero" class="border-b border-border p-4 sm:border-x sm:p-6 md:p-10">
+    <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4">
+      <div class="min-w-0">
+        <h1 class="text-2xl font-bold tracking-wide sm:text-3xl md:text-5xl">{app.docsTitle}</h1>
+        <p class="mt-2 text-sm leading-relaxed text-muted-foreground sm:max-w-2xl sm:text-base">
+          {app.description}
+        </p>
+      </div>
+      <span class="w-fit shrink-0 border border-border px-3 py-1 font-heading text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+        {app.version}
+      </span>
+    </div>
+    <div class="mt-4 w-full sm:mt-6 sm:max-w-lg">
+      <CodePanel label="Base URL" code={app.baseUrl} />
+    </div>
+  </div>
+
+  {
+    vaultcdnApiGroups.map((section) => (
+      <section id={section.id} class="mb-10 scroll-mt-20 last:mb-0 sm:mb-12 sm:scroll-mt-24">
+        <div class="mb-4">
+          <h2 class="text-xl font-bold tracking-wide sm:text-2xl">{section.title}</h2>
+          {section.description && (
+            <p class="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">{section.description}</p>
+          )}
+        </div>
+        <div class="grid gap-5">
+          {section.endpoints.map((endpoint) => (
+            <EndpointBlock endpoint={endpoint} />
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  <section id="media" class="mb-10 scroll-mt-20 sm:mb-12 sm:scroll-mt-24">
+    <div id="image-previews" class="scroll-mt-20 sm:scroll-mt-24">
+      <div class="mb-4">
+        <h2 class="text-xl font-bold tracking-wide sm:text-2xl">{imagePreviewSection.title}</h2>
+        <p class="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          {imagePreviewSection.description}
+        </p>
+      </div>
+      <article class="border border-border bg-card">
+        <div class="border-b border-border p-4 md:p-6">
+          <div class="flex flex-wrap items-center gap-3 border border-border bg-background px-3 py-2">
+            <span class="inline-flex shrink-0 items-center border border-neutral-600 bg-transparent px-2 py-0.5 font-mono text-xs font-semibold tracking-wider text-lime-400">
+              GET
+            </span>
+            <code class="min-w-0 break-all font-mono text-sm text-foreground sm:break-normal sm:whitespace-nowrap">/f/{'{id}'}?w=480&q=80</code>
+          </div>
+        </div>
+        <div class="p-4 md:p-6">
+          <ParamTable title="Query Parameters" params={imagePreviewSection.params} />
+        </div>
+      </article>
+    </div>
+  </section>
+</DocsLayout>

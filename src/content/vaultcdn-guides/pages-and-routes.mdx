@@ -1,0 +1,16 @@
+---
+title: Pages and Routes
+description: Web app routes and authentication requirements.
+order: 9
+---
+
+| Route | Auth | Description |
+|-------|------|-------------|
+| `/` | Public | Landing page with sign-in CTA. Shows `?error=auth_failed` on OAuth failure |
+| `/gallery` | Session | File and folder gallery. Optional `?folder={uuid}` for subfolders |
+| `/settings` | Session | Profile, storage usage, API key management, sign out |
+| `/admin` | Session + admin | Member management, quotas, upload browser |
+| `/f/{id}` | **Public** | Serve a file by UUID |
+| `/f/{id}/{filename}` | **Public** | Same handler; filename used for non-media downloads |
+
+For the full REST API, see the [API Docs](/vaultcdn/docs).

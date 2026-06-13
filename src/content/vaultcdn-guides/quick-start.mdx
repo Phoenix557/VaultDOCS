@@ -1,0 +1,47 @@
+---
+title: Quick Start
+description: Clone, configure, and run VAULT locally.
+order: 6
+---
+
+## 1. Clone and install
+
+```bash
+git clone https://github.com/Phoenix557/PhxCDN.git
+cd PhxCDN
+npm install
+```
+
+## 2. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Generate two secrets (run twice, use one for each variable):
+
+```bash
+openssl rand -base64 32
+```
+
+Fill in `.env` — see the Environment Variables guide for the full list.
+
+## 3. Start MongoDB
+
+Ensure MongoDB is running and `MONGODB_URI` points at your instance:
+
+```
+MONGODB_URI=mongodb://localhost:27017/phxcdn
+```
+
+## 4. Set up Discord
+
+Follow the Discord Setup guide below.
+
+## 5. Run the dev server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).

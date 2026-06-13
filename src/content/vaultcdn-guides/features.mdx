@@ -1,0 +1,69 @@
+---
+title: Features
+description: Authentication, uploads, gallery, CDN URLs, API keys, admin, and desktop app.
+order: 2
+---
+
+## Authentication and access control
+
+- **Discord OAuth2** with `identify` and `guilds.join` scopes
+- Automatic **guild join** on sign-in (requires bot token + guild ID)
+- **iron-session** cookie sessions (7-day, httpOnly)
+- **Upload access** via admin-granted permissions, env allowlist, or admin role
+- **Admin panel** for users listed in `ADMIN_DISCORD_IDS`
+- Role badges in the UI: Admin, Uploader, Member
+
+## Uploads and storage
+
+- **Any file type** — not limited to images; MIME detected from magic bytes
+- Special handling for `.map` files (JSON source maps and game maps)
+- **Per-file size limit** via `MAX_UPLOAD_BYTES`
+- **Per-user storage quota** (default 10 GB, adjustable per member in admin)
+- Files stored at `uploads/{discordId}/{uuid}{ext}` with legacy flat-layout fallback
+- **Rate limiting:** 20 uploads per minute per user (in-memory; single-instance only)
+- Drag-and-drop upload zone with **multi-file queue** and progress modal
+- Optional **folder assignment** at upload time
+
+## Gallery
+
+- **Folder hierarchy** with breadcrumbs and nested navigation
+- **Grid and list views** (preference saved in `localStorage`)
+- **Category filters:** images, videos, audio, text, fonts, and extension-based groups
+- **Pin** files and folders (pinned items sort first)
+- **Custom folder thumbnails** — pick any owned image as a folder cover
+- **Drag-and-drop** to move files, multi-selections, and folders
+- **Folder sharing** with roles: viewer, editor, manager
+- **Clipboard paste** and gallery-wide drag-and-drop to upload
+- **Upload cancel and retry** in the progress modal
+- **Bulk select** with click, Ctrl/Cmd, and Shift-range selection
+- **Context menus:** view, copy URL, download, rename, pin, move, set folder thumbnail, delete, edit
+- **Storage dashboard** with file count, usage, and role summary
+
+## Media and CDN URLs
+
+- Images and videos: `/f/{id}`
+- Other file types: `/f/{id}/{originalName}`
+- **On-the-fly WebP previews** via Sharp (`?w=` width, `?q=` quality)
+- Lazy-loaded thumbnails in the grid (480px wide)
+- Full preview in modal (up to 1920px wide)
+- Video playback in the image modal
+- **In-browser image editor** with highlight, blur, pixelate, text overlays
+
+## API keys and programmatic access
+
+- **Non-expiring API keys** (`cdn_…` prefix, SHA-256 hashed at rest)
+- **Short-lived JWTs** (1 hour) for Bearer upload auth
+- ShareX custom uploader preset included
+
+## Admin panel
+
+- Searchable user list with storage usage and quota
+- Toggle upload access per member
+- Set quota presets (2 / 5 / 10 / 50 GB) or custom values
+- Add members by Discord user ID
+- Browse any user's uploads; admins can delete any file
+
+## Desktop app
+
+- Rust-native Tauri shell (Windows, macOS, Linux) loading the live site
+- Preserves `window.phx` bridge for OAuth login/logout

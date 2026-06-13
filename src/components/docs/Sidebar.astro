@@ -1,0 +1,20 @@
+---
+import type { ApiGroup, AppConfig } from '../../data/types';
+import SidebarNav from './SidebarNav.astro';
+
+interface Props {
+  mode: 'docs' | 'guides';
+  app: AppConfig;
+  appSlug: string;
+  apiGroups?: ApiGroup[];
+  currentGuideSlug?: string;
+}
+
+const props = Astro.props;
+---
+
+<aside class="hidden w-60 shrink-0 lg:block">
+  <div class="sticky top-14 max-h-[calc(100dvh-3.5rem)] overflow-y-auto scrollbar-hidden pr-1 lg:top-20 lg:max-h-[calc(100dvh-5rem)]">
+    <SidebarNav {...props} />
+  </div>
+</aside>

@@ -1,0 +1,55 @@
+---
+import GuideLayout from '../../../components/docs/GuideLayout.astro';
+import { getApp, getAppSlugs } from '../../../data/apps/index';
+import { getAdjacentGuides } from '../../../data/apps/vaultcdn/guides';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('vaultcdn-guides');
+  const apps = getAppSlugs();
+
+  return apps.flatMap((app) =>
+    guides.map((guide) => ({
+      params: { app, slug: guide.slug },
+      props: { guide },
+    })),
+  );
+}
+
+const { app: appSlug } = Astro.params;
+const { guide } = Astro.props;
+const app = getApp(appSlug!);
+
+if (!app) {
+  return Astro.redirect('/');
+}
+
+const { Content } = await guide.render();
+const { prev, next } = getAdjacentGuides(guide.slug);
+---
+
+<GuideLayout
+  app={app}
+  title={guide.data.title}
+  description={guide.data.description}
+  currentGuideSlug={guide.slug}
+>
+  <Content />
+
+  <nav slot="footer" class="mt-10 flex flex-col gap-3 border-t border-border pt-6 text-sm sm:mt-16 sm:flex-row sm:justify-between sm:pt-8">
+    {prev ? (
+      <a href={`/${app.slug}/guides/${prev.slug}`} class="text-muted-foreground transition-colors hover:text-white">
+        ← {prev.title}
+      </a>
+    ) : (
+      <span />
+    )}
+    {next ? (
+      <a href={`/${app.slug}/guides/${next.slug}`} class="text-muted-foreground transition-colors hover:text-white">
+        {next.title} →
+      </a>
+    ) : (
+      <span />
+    )}
+  </nav>
+</GuideLayout>

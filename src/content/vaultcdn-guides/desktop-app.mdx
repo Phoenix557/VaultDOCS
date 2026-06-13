@@ -1,0 +1,74 @@
+---
+title: Desktop App
+description: Electron desktop shell for VAULT on Windows.
+order: 13
+---
+
+VAULT ships as a Windows desktop app that loads the same site as the browser — gallery, uploads, Discord login, admin, and API keys all work identically. The backend stays on your server; Electron is a secure native shell.
+
+## Download
+
+Pre-built installer: [VAULT Desktop v0.2.0](https://github.com/Phoenix557/PhxCDN/releases/tag/desktop-v0.2.0)
+
+## Run from source
+
+```bash
+npm install
+npm run electron:dev
+```
+
+## Point at localhost
+
+```bash
+# Terminal 1
+npm run dev
+
+# Terminal 2 (Windows)
+set PHXCDN_URL=http://localhost:3000
+npm run electron:dev
+```
+
+## Build installer
+
+Close any running VAULT/Electron instances first, then:
+
+```bash
+npm run electron:dist
+```
+
+Output: `release/VAULT Setup 0.2.0.exe`
+
+## Electron scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run electron:dev` | Generate icon, compile, and launch Electron |
+| `npm run electron:dist` | Build Windows NSIS installer |
+| `npm run electron:icon` | Regenerate `build/icon.ico` from `public/icon.svg` |
+| `npm run electron:compile` | Compile `electron/main.ts` → `dist-electron/` |
+| `npm run electron:smoke` | Launch for 15s to verify startup |
+
+## How it works
+
+- Loads `PHXCDN_URL/gallery` (default site: `https://cdn.phxservices.co`)
+- Branded splash screen on startup; sign-in modal when logged out
+- Discord OAuth runs inside the app window so session cookies persist
+- Menu bar hidden; external links open in your default browser
+- Single-instance lock (second launch focuses existing window)
+- Window bounds saved to `%APPDATA%/VAULT/window-state.json`
+
+## Code signing (SmartScreen)
+
+Unsigned Windows installers trigger **SmartScreen** warnings. Self-signed certificates do not help — you need a trusted Authenticode signature.
+
+| Option | Cost | Notes |
+|--------|------|-------|
+| **Azure Artifact Signing** | ~$9.99/mo | Recommended; integrates with CI |
+| **SignPath** | Free for qualifying open-source | Full signing for OSS projects |
+| **Standard OV / EV cert** | $200–500+/yr | EV gives fastest SmartScreen trust |
+
+Regenerate installer assets:
+
+```bash
+npm run electron:icon
+```
